@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import db from './firebase/firebase.initialize';
 import {collection, getDocs, addDoc}  from "firebase/firestore";
+import Swal from 'sweetalert2'
 import SingleItem from './components/SingleItem';
 
 
@@ -9,17 +10,24 @@ function App() {
   const [items, setItems] = useState([]);
   const [itemName, setItemName] = useState('');
   const itemCollectionRef = collection(db, "item-collection");
-  useEffect(() => {
+
     const getData = async () => {
       const data = await getDocs(itemCollectionRef);
       setItems(data.docs.map(doc => ({...doc.data(), id: doc.id})))
     }
-    getData();
-  }, []);
+    useEffect(()=>{
+      getData();
+    },[]);
 
   const addToDatabase = async (event) => {
     event.preventDefault();
     await addDoc(itemCollectionRef, {itemName});
+    getData();
+    Swal.fire(
+      'Good job!',
+      'The entity is inserted successfully!',
+      'success'
+    )
     event.target.reset();
   }
 
@@ -27,10 +35,10 @@ function App() {
     <div  className="bg-gradient-to-r from-cyan-500 to-blue-500 p-10 min-h-screen">
       <div className='container bg-white max-w-xl mx-auto p-6 rounded-lg'>
           
-      {items.map(item => {
+      {items.map((item, index) => {
         const {itemName, id} = item;
         return (
-          <SingleItem key={id} itemName = {itemName} id = {id} />
+          <SingleItem key={id} itemName = {itemName} id = {id} getData={getData} index={index} items= {items} />
         );
       })}
       <form onSubmit={addToDatabase}  className='flex justify-between gap-2'>
