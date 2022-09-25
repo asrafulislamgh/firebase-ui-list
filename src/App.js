@@ -19,7 +19,7 @@ function App() {
 
   const addToDatabase = async (event) => {
     event.preventDefault();
-    await addDoc(itemCollectionRef, {itemName})
+    await addDoc(itemCollectionRef, {itemName});
     event.target.reset();
   }
 
@@ -30,7 +30,7 @@ function App() {
       {items.map(item => {
         const {itemName, id} = item;
         return (
-          <SingleItem key={id} itemName = {itemName} />
+          <SingleItem key={id} itemName = {itemName} id = {id} />
         );
       })}
       <form onSubmit={addToDatabase}  className='flex justify-between gap-2'>
