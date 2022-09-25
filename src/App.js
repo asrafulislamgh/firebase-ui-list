@@ -42,7 +42,7 @@ function App() {
         );
       })}
       <form onSubmit={addToDatabase}  className='flex justify-between gap-2'>
-            <input className='shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' type="text" name="update" id="" placeholder='Text' onChange={e => setItemName(e.target.value)}/>
+            <input className='shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' type="text" name="update" id="" placeholder='Insert your item' onChange={e => setItemName(e.target.value)}/>
             <button type='submit' className='rounded bg-blue-500 hover:bg-blue-700 py-2 px-4 text-white'>Add</button>
           </form>
       </div>
