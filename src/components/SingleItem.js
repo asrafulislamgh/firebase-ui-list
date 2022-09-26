@@ -6,7 +6,41 @@ import Swal from 'sweetalert2'
 import db from '../firebase/firebase.initialize';
 
 const SingleItem = ({itemName, id, getData, index, items}) => {
-    const handleLevelUp = async () => {
+
+    // const updatingLevel = async (indexValue) => {
+    //     const temp = {...items[index]};
+    //     const query = doc(db, "item-collection", id);
+    //     const newName1 = items[indexValue].itemName;
+    //     const updatedItem1 = {itemName: newName1};
+    //     await updateDoc(query, updatedItem1);
+        
+    //     const query2 = doc(db, "item-collection", items[indexValue].id);
+    //     const newName2 = temp.itemName;
+    //     const updatedItem2 = {itemName: newName2};
+    //     await updateDoc(query2, updatedItem2);
+    // }
+
+    const updatingAlert = () => {
+        let timerInterval
+        Swal.fire({
+        title: 'Data is updating!',
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading()
+            timerInterval = setInterval(() => {
+            }, 100)
+        },
+        willClose: () => {
+            clearInterval(timerInterval)
+        }
+        }).then((result) => {
+        if (result.dismiss === Swal.DismissReason.timer) {
+        }
+        })
+    }
+    const handleLevelUp = async (indexValue) => {
+        updatingAlert();
         const temp = {...items[index]};
         const query = doc(db, "item-collection", id);
         const newName1 = items[index-1].itemName;
@@ -17,10 +51,12 @@ const SingleItem = ({itemName, id, getData, index, items}) => {
         const newName2 = temp.itemName;
         const updatedItem2 = {itemName: newName2};
         await updateDoc(query2, updatedItem2);
-        getData()
-    }
-    const handleLevelDown = async () => {
+        // updatingLevel(indexValue);
         
+        getData();
+    }
+    const handleLevelDown = async (indexValue) => {
+        updatingAlert();
         const temp = {...items[index]};
         const query = doc(db, "item-collection", id);
         const newName1 = items[index+1].itemName;
@@ -31,7 +67,8 @@ const SingleItem = ({itemName, id, getData, index, items}) => {
         const newName2 = temp.itemName;
         const updatedItem2 = {itemName: newName2};
         await updateDoc(query2, updatedItem2);
-        getData()
+        // updatingLevel(indexValue);
+        getData();
         
     }
     const handleDelete = async (id) => {
@@ -69,8 +106,8 @@ const SingleItem = ({itemName, id, getData, index, items}) => {
                   <p className='text-left'>{itemName?.length > 55 ? itemName.substring(0,55)+ "..." : itemName}</p>
                 </div>
                 <div className="flex gap-5">
-                  <button onClick={()=> handleLevelUp(id)} className='text-blue-500 hover:text-blue-700 disabled:opacity-30' title='Up'  type="button" disabled = {(index===0 ? true : false) }><AiOutlineArrowUp/></button>
-                  <button onClick={()=> handleLevelDown(id)} className='text-blue-500 hover:text-blue-700 disabled:opacity-30' title='Down'  type="button"  disabled = {(index === items.length-1) ? true : false}><AiOutlineArrowDown/></button>
+                  <button onClick={()=> handleLevelUp(index-1)} className='text-blue-500 hover:text-blue-700 disabled:opacity-30' title='Up'  type="button" disabled = {(index===0 ? true : false) }><AiOutlineArrowUp/></button>
+                  <button onClick={()=> handleLevelDown(index+1)} className='text-blue-500 hover:text-blue-700 disabled:opacity-30' title='Down'  type="button"  disabled = {(index === items.length-1) ? true : false}><AiOutlineArrowDown/></button>
                   <button onClick={()=> handleDelete(id)} className='text-red-500 hover:text-red-700' title='Delete'  type="button"><ImCross /></button>
                 </div>
             </div>

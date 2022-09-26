@@ -4,6 +4,7 @@ import db from './firebase/firebase.initialize';
 import {collection, getDocs, addDoc}  from "firebase/firestore";
 import Swal from 'sweetalert2'
 import SingleItem from './components/SingleItem';
+import { PropagateLoader } from 'react-spinners';
 
 
 function App() {
@@ -13,8 +14,9 @@ function App() {
 
     const getData = async () => {
       const data = await getDocs(itemCollectionRef);
-      setItems(data.docs.map(doc => ({...doc.data(), id: doc.id})))
+      return setItems(data.docs.map(doc => ({...doc.data(), id: doc.id})))
     }
+
     useEffect(()=>{
       getData();
     },[]);
@@ -32,21 +34,28 @@ function App() {
   }
 
   return (
-    <div  className="bg-gradient-to-r from-cyan-500 to-blue-500 p-10 min-h-screen">
+    !items.length ? (<div className='flex justify-center items-center h-screen'>
+      <PropagateLoader color="#36d7b7" />
+    </div>) 
+    : 
+    (
+      <div  className="bg-gradient-to-r from-cyan-500 to-blue-500 p-10 min-h-screen">
       <div className='container bg-white max-w-xl mx-auto p-6 rounded-lg'>
           
-      {items.map((item, index) => {
-        const {itemName, id} = item;
-        return (
-          <SingleItem key={id} itemName = {itemName} id = {id} getData={getData} index={index} items= {items} />
-        );
-      })}
-      <form onSubmit={addToDatabase}  className='flex justify-between gap-2'>
+        {items.map((item, index) => {
+          const {itemName, id} = item;
+          return (
+            <SingleItem key={id} itemName = {itemName} id = {id} getData={getData} index={index} items= {items} />
+          );
+        })}
+        <form onSubmit={addToDatabase}  className='flex justify-between gap-2'>
             <input className='shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' type="text" name="update" id="" placeholder='Insert your item' onChange={e => setItemName(e.target.value)}/>
             <button type='submit' className='rounded bg-blue-500 hover:bg-blue-700 py-2 px-4 text-white'>Add</button>
-          </form>
+        </form>
       </div>
     </div>
+    )
+    
   );
 }
 
